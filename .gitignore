@@ -22,6 +22,9 @@
 sysinfo.txt
 
 
+### Unity VS ###
+Assets/UnityVS/
+
 
 ### Mac ###
 .DS_Store
