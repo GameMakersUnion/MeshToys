@@ -9,7 +9,8 @@ using System.Collections.Generic;
 
 //Summary:
 //      attach to any object, it will detect meshes and highlight them with colored spheres and drawing rays
-public class TraceMesh : MonoBehaviour {
+public class TraceMesh : MonoBehaviour
+{
 
     Mesh mesh;
     GameObject[] vertMarkers;
@@ -39,8 +40,9 @@ public class TraceMesh : MonoBehaviour {
         {p.Sphere, PrimitiveType.Sphere}
     };
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         NO_MESH_FILTER_MSG = "WARN: No Mesh Filter found on gameObject: " + gameObject.name;
         NO_MESH_MSG = "WARN: No Mesh found on gameObject: " + gameObject.name;
@@ -51,12 +53,14 @@ public class TraceMesh : MonoBehaviour {
         WARN_GIVEN = false;
 
         MeshFilter meshFilter = GetComponent<MeshFilter>();
-        if (meshFilter == null){
+        if (meshFilter == null)
+        {
             Debug.LogWarning(NO_MESH_FILTER_MSG);
             return;
         }
         mesh = meshFilter.mesh;
-        if (mesh == null){
+        if (mesh == null)
+        {
             Debug.LogWarning(NO_MESH_MSG);
             return;
         }
@@ -85,9 +89,10 @@ public class TraceMesh : MonoBehaviour {
 
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (mesh == null && !WARN_GIVEN)
         {
             Debug.LogWarning(NO_MESH_FILTER_MSG);
@@ -96,15 +101,22 @@ public class TraceMesh : MonoBehaviour {
 
         if (mesh == null) return;
 
+
         Vector3 p = transform.position;
-        for (int i = 0; i < mesh.vertices.Length; i++)
+        for (int i = 0; i < mesh.triangles.Length; i++)
         {
-            //create rays to show connections
-            Vector3 start = vertMarkers[i].transform.position;
-            Vector3 dir = (vertMarkers[(i + 1) % mesh.vertices.Length]).transform.position - vertMarkers[i].transform.position;
-            Color cooleur = vertMarkers[i].GetComponent<Renderer>().material.color;
+            int t = mesh.triangles[i];
+            int nextT = mesh.triangles[(int)i / 3 * 3 + (i + 1) % 3];
+            //draw rays the color of the first of three vertices in a triangle.
+            Color cooleur = vertMarkers[(int)i / 3].GetComponent<Renderer>().material.color;
+            //next
+            Vector3 start = vertMarkers[t].transform.position;
+            Vector3 dir = (vertMarkers[nextT]).transform.position - vertMarkers[t].transform.position;
             Debug.DrawRay(start, dir, cooleur);
+            //"i: " + i + ", vert: " + mesh.vertices[i] + ", col: " + (c)((i) % cSize) + 
+            //print("::: triIdx: " + t + ", nextT: " + nextT + ", vert@t: " + mesh.vertices[t] + ", col@t: " + (c)((t) % cSize) + ", dir: " + dir);
         }
-        
-	}
+        Debug.Log("stop");
+
+    }
 }
