@@ -76,8 +76,8 @@ public static class trace
             vertMarkers[i] = GameObject.CreatePrimitive(primitives[PRIMITIVE]);
             vertMarkers[i].transform.parent = gameObject.transform;
             vertMarkers[i].name = "Vertice" + i;
-            vertMarkers[i].transform.position = Vector3.Scale(mesh.vertices[i], gameObject.transform.localScale) + gameObject.transform.position;
-            vertMarkers[i].transform.localScale *= 0.05f;
+			vertMarkers[i].transform.position = gameObject.transform.localToWorldMatrix.MultiplyPoint(mesh.vertices[i]);
+			vertMarkers[i].transform.localScale *= 0.05f;
             Color cooleur1 = cooleurs[(c)((i) % cSize)];
             vertMarkers[i].GetComponent<Renderer>().material.color = cooleur1;
         }

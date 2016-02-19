@@ -1,0 +1,30 @@
+wwwwwwwwwwaaaaaaaaaaaaaat. 
+during vert array creation, it is uneven. i am bothered. wtf. it's probably related to creating {by triangles}.
+
+fuck. i need to ensure my design makes sense from basics. rewrite in notepad from scratch. this is only right way.
+
+
+
+given a mesh, which consists of an array of vertices, of vector3. so for example, a single polygon would have a mesh which contains an array of 3 vector3's. so at indice 0, there's vect3(0,1,2). v[1]=vect3(2,3,4). v[2]=vect3(4,4,4). now, regarding the triangles, that's an array of indexes. so triangle[0]=2, t[1]=0, t[2]=1.  now in what situation do 
+
+
+0 -----| 2
+  |   /|
+  |  / |
+  | /  |
+  |/   |
+1 |----- 3
+
+v[0]=0,0
+v[1]=0,1
+v[2]=1,0
+v[3]=1,1
+
+t[0]=v[1]
+t[1]=v[2]
+t[2]=v[3]
+t[3]=v[2]
+t[4]=v[1]
+t[5]=v[0]
+
+i want an instantiated gameobject to represent each vertice, in the overlap scenario. so i want all six, i want them all. 
