@@ -25,7 +25,8 @@ public class TraceMesh : MonoBehaviour
     bool WARN_GIVEN;
     bool TRACED;
     Transform trace;
-    public bool rebuild;
+    public bool rebuildOnce;
+	public bool persist;
     p PRIMITIVE;
 
     enum c { Red, Orange, Yellow, Green, Blue, Violet }
@@ -73,7 +74,7 @@ public class TraceMesh : MonoBehaviour
         GOOD_PERFORMANCE = 100;
         PERFORMANCE_WARN_MSG2 = "WARN: Your system may perform slowly with over " + GOOD_PERFORMANCE + " vertices being rendered for any reason on gameObject: " + gameObject.name + ", so 1 out of " + GOOD_PERFORMANCE + " are being shown.";
         WARN_GIVEN = false;
-        rebuild = true;
+        rebuildOnce = true;
 
         MeshFilter meshFilter = GetComponent<MeshFilter>();
         if (meshFilter == null)
@@ -98,7 +99,7 @@ public class TraceMesh : MonoBehaviour
             Debug.LogWarning(PERFORMANCE_WARN_MSG2);
         }
 
-        //buildItWillCome();
+        buildItAndTheyWillCome();
     }
 
     // Update is called once per frame
@@ -112,19 +113,20 @@ public class TraceMesh : MonoBehaviour
 
         if (mesh == null) return;
 
-        if (rebuild)
+        if (rebuildOnce)
         {
-            rebuild = false;
-            //buildItWillCome();
+			//immediately toggles off publically exposed var
+            rebuildOnce = false;
+            buildItAndTheyWillCome();
         }
 
-        //drawItItCame();
+        drawItItCame();
 
     }
 
     //the problem with building it vs drawing it, is i'm basing my start method off 4 vertices, but updating over 6,
 
-    void buildItWillCome()
+    void buildItAndTheyWillCome()
     {
         //convenience storage obj.
         trace = transform.Find("Trace");
@@ -136,9 +138,10 @@ public class TraceMesh : MonoBehaviour
         }
 
         PRIMITIVE = (mesh.vertices.Length > GREAT_PERFORMANCE) ? p.Cube : p.Sphere;
-        vertMarkers = new GameObject[mesh.vertices.Length];
+        vertMarkers = new GameObject[mesh.triangles.Length];
         for (int i = 0; i < mesh.triangles.Length; i++)
         {
+			int a = (int)i / 3;
             int t = mesh.triangles[i];
             int nextT = mesh.triangles[(int)i / 3 * 3 + (i + 1) % 3];
             int nextNextT = mesh.triangles[(int)i / 3 * 3 + (i + 2) % 3];
@@ -174,7 +177,6 @@ public class TraceMesh : MonoBehaviour
                 int sz = vMesh.colors.Length;
                 for (int j = 0; j < sz; j++)
                 {
-                    print("quack");
                     Color cooleur1 = mats[(c)((i) % cSize)].color;
                     vMesh.colors[j] = cooleur1;
                 }
@@ -197,7 +199,6 @@ public class TraceMesh : MonoBehaviour
     void makeVertice(int iteration, int tvi)
     {
         //create spheres to show vertices 
-        print(iteration);
         vertMarkers[tvi] = GameObject.CreatePrimitive(primitives[PRIMITIVE]);
         vertMarkers[tvi].AddComponent<V>();
         vertMarkers[tvi].transform.parent = trace.transform;
@@ -206,11 +207,7 @@ public class TraceMesh : MonoBehaviour
 		Vector3 whichSize = vertMarkers[tvi].transform.localScale * 0.05f;
         int whichMaterial = ((int)iteration / 3) % cSize;
         vertMarkers[tvi].GetComponent<Renderer>().material = mats[(c)whichMaterial];
-        print("(int)i / 3:" + (int)iteration / 3);
         vertMarkers[tvi].transform.localScale = whichSize;
-
-        print("start: " + (int)iteration / 3);
-
     }
 
     void drawItItCame()

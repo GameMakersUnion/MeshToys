@@ -36,16 +36,20 @@ public static class trace
         string NO_MESH_MSG;
         string PERFORMANCE_WARN_MSG;
         int GREAT_PERFORMANCE;
-        int GOOD_PERFORMANCE;
-        string PERFORMANCE_WARN_MSG2;
-        bool WARN_GIVEN;
+		int GOOD_PERFORMANCE;
+		string PERFORMANCE_WARN_MSG2;
+		int POOR_PERFORMANCE;
+		string PERFORMANCE_WARN_MSG3;
+		bool WARN_GIVEN;
 
         NO_MESH_MSG = "WARN: No Mesh found on gameObject: " + gameObject.name;
         GREAT_PERFORMANCE = 50;
         PERFORMANCE_WARN_MSG = "WARN: Your system may perform slowly with over " + GREAT_PERFORMANCE + " vertices being rendered as spheres on gameObject: " + gameObject.name + ", so Cubes have been used.";
         GOOD_PERFORMANCE = 100;
         PERFORMANCE_WARN_MSG2 = "WARN: Your system may perform slowly with over " + GOOD_PERFORMANCE + " vertices being rendered for any reason on gameObject: " + gameObject.name + ", so 1 out of " + GOOD_PERFORMANCE + " are being shown.";
-        WARN_GIVEN = false;
+		POOR_PERFORMANCE = 200;
+		PERFORMANCE_WARN_MSG3 = "WARN: Your system may perform very slowly with over " + POOR_PERFORMANCE + " vertices being rendered for any reason on gameObject: " + gameObject.name + ", so total amount will be capped at " + POOR_PERFORMANCE + ".";
+		WARN_GIVEN = false;
 
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
         if (meshFilter == null)
@@ -67,11 +71,16 @@ public static class trace
         {
             Debug.LogWarning(PERFORMANCE_WARN_MSG2);
         }
+		if (mesh.vertices.Length > POOR_PERFORMANCE)
+		{
+			Debug.LogWarning(PERFORMANCE_WARN_MSG3);
+		}
 
         p PRIMITIVE = (mesh.vertices.Length > GREAT_PERFORMANCE) ? p.Cube : p.Sphere;
         vertMarkers = new GameObject[mesh.vertices.Length];
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
+			if (i > POOR_PERFORMANCE) return vertMarkers;
             //create spheres to show vertices 
             vertMarkers[i] = GameObject.CreatePrimitive(primitives[PRIMITIVE]);
             vertMarkers[i].transform.parent = gameObject.transform;
